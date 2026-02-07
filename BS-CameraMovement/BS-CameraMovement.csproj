@@ -124,9 +124,6 @@
     <Compile Include="Components\CameraControlUI.cs" />
     <Compile Include="Components\CameraMovementController.cs" />
     <Compile Include="Installers\BSCameraMovementInstaller.cs" />
-    <Compile Include="Installers\BS_CameraMovementAppInstaller.cs" />
-    <Compile Include="Installers\BS_CameraMovementMenuInstaller.cs" />
-    <Compile Include="Installers\BS_CameraMovementPlayerInstaller.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

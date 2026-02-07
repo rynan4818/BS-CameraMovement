@@ -11,7 +11,7 @@ namespace BS_CameraMovement.Components
     {
         private Camera _mainCameraFov;
         private Camera _mainCameraTrans;
-        private Rect _windowRect = new Rect(PluginConfig.Instance.menuPosX, PluginConfig.Instance.menuPosY, 300, 250);
+        private Rect _windowRect;
 
         private BeatmapObjectsInputBinder _inputBinder;
         private CameraMovementController _cameraMovementController;
@@ -25,6 +25,11 @@ namespace BS_CameraMovement.Components
 
         public void Start()
         {
+            var x = PluginConfig.Instance.menuPosX;
+            var y = PluginConfig.Instance.menuPosY;
+            if (x > Screen.width - 300) x = Screen.width - 300;
+            if (y > Screen.height - 250) y = Screen.height - 250;
+            _windowRect = new Rect(x, y, 300, 250);
             // Find Main Camera if not injected
             if (_mainCameraFov == null)
             {
