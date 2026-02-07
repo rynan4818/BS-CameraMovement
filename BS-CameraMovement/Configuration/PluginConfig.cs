@@ -1,5 +1,4 @@
-﻿/*
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
@@ -8,7 +7,12 @@ namespace BS_CameraMovement.Configuration
     internal class PluginConfig
     {
         public static PluginConfig Instance { get; set; }
-        public virtual int IntValue { get; set; } = 42; // BSIPAが値の変更を検出し、自動的に設定を保存したい場合は、'virtual'でなければなりません
+        public virtual bool enable { get; set; } = true;
+        public virtual bool showMenu { get; set; } = true;
+        public virtual bool qFormat { get; set; } = true;
+
+        public virtual float menuPosX { get; set; } = 50f;
+        public virtual float menuPosY { get; set; } = 50f;
 
         /// <summary>
         /// これは、BSIPAが設定ファイルを読み込むたびに（ファイルの変更が検出されたときを含めて）呼び出されます
@@ -35,4 +39,3 @@ namespace BS_CameraMovement.Configuration
         }
     }
 }
-*/

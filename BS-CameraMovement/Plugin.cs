@@ -21,6 +21,9 @@ namespace BS_CameraMovement
             Log = logger;
             Log.Info("BS-CameraMovement initialized.");
 
+            Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
+            Log.Debug("Config loaded");
+
             zenjector.Install<BSCameraMovementInstaller, BeatmapLevelEditorInstaller>();
         }
 

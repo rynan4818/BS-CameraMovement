@@ -3,6 +3,7 @@ using UnityEngine;
 using Zenject;
 using BeatmapEditor3D;
 using BeatmapEditor3D.DataModels;
+using BS_CameraMovement.Configuration;
 
 namespace BS_CameraMovement.Components
 {
@@ -16,6 +17,17 @@ namespace BS_CameraMovement.Components
         private string _scriptPath;
         private bool _isActive;
         public float beforeSeconds;
+
+        public bool IsEnabled
+        {
+            get => PluginConfig.Instance.enable;
+            set
+            {
+                if (PluginConfig.Instance.enable == value) return;
+                PluginConfig.Instance.enable = value;
+                UpdateCameraState();
+            }
+        }
 
         public CameraMovementController(
             BeatmapProjectManager beatmapProjectManager,
@@ -32,7 +44,7 @@ namespace BS_CameraMovement.Components
         {
             Debug.Log("BS-CameraMovement: CameraMovementController Initializing...");
             _mainCamera = GameObject.Find("Wrapper/MainCamera").GetComponent<Camera>();
-            _mainCamera.rect = new Rect(0, 0.23f, 1f, 0.77f);
+            UpdateCameraState();
             Debug.Log($"usePhysicalProperties:{_mainCamera.usePhysicalProperties}");
 
             // Get project path and script path
@@ -72,9 +84,25 @@ namespace BS_CameraMovement.Components
             }
         }
 
+        private void UpdateCameraState()
+        {
+            if (_mainCamera == null) return;
+            if (PluginConfig.Instance.enable)
+            {
+                _mainCamera.rect = new Rect(0, 0.23f, 1f, 0.77f);
+            }
+            else
+            {
+                _mainCamera.rect = new Rect(0, 0, 1f, 1f);
+                Camera.main.transform.position = new Vector3(0, 2, -6);
+                Camera.main.transform.eulerAngles = new Vector3(15, 0, 0);
+                _mainCamera.fieldOfView = 60;
+            }
+        }
+
         public void Tick()
         {
-            if (!_isActive || _mainCamera == null) return;
+            if (!PluginConfig.Instance.enable || !_isActive || _mainCamera == null) return;
            
             float currentSeconds = _audioDataModel.bpmData.BeatToSeconds(_audioTimeSyncController.songTime);
             if (beforeSeconds == currentSeconds)

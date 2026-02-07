@@ -1,3 +1,4 @@
+using BS_CameraMovement.Configuration;
 using BeatmapEditor3D.Views;
 using System;
 using System.Text.RegularExpressions;
@@ -10,21 +11,19 @@ namespace BS_CameraMovement.Components
     {
         private Camera _mainCameraFov;
         private Camera _mainCameraTrans;
-        private Rect _windowRect = new Rect(20, 20, 300, 250);
-        private bool _showMenu = true;
-        
-        // Settings
-        private bool _qFormat = true;
+        private Rect _windowRect = new Rect(PluginConfig.Instance.menuPosX, PluginConfig.Instance.menuPosY, 300, 250);
 
         private BeatmapObjectsInputBinder _inputBinder;
+        private CameraMovementController _cameraMovementController;
 
         [Inject]
-        private void Constractor(BeatmapObjectsInputBinder beatmapObjectsInputBinder)
+        public void Constractor(BeatmapObjectsInputBinder beatmapObjectsInputBinder, CameraMovementController cameraMovementController)
         {
             _inputBinder = beatmapObjectsInputBinder;
+            _cameraMovementController = cameraMovementController;
         }
 
-        void Start()
+        public void Start()
         {
             // Find Main Camera if not injected
             if (_mainCameraFov == null)
@@ -41,7 +40,7 @@ namespace BS_CameraMovement.Components
             }
         }
 
-        void OnGUI()
+        public void OnGUI()
         {
             if (_mainCameraFov == null) return;
 
@@ -60,12 +59,12 @@ namespace BS_CameraMovement.Components
             }
 
             // Toggle Menu Button
-            if (GUI.Button(new Rect(Screen.width - 130, 10, 120, 20), _showMenu ? "Hide Camera UI" : "Show Camera UI"))
+            if (GUI.Button(new Rect(Screen.width - 130, 10, 120, 20), PluginConfig.Instance.showMenu ? "Hide Camera UI" : "Show Camera UI"))
             {
-                _showMenu = !_showMenu;
+                PluginConfig.Instance.showMenu = !PluginConfig.Instance.showMenu;
             }
 
-            if (_showMenu)
+            if (PluginConfig.Instance.showMenu)
             {
                 _windowRect = GUI.Window(1001, _windowRect, DrawWindow, "Camera Control");
             }
@@ -75,7 +74,22 @@ namespace BS_CameraMovement.Components
         {
             GUI.DragWindow(new Rect(0, 0, 10000, 20));
 
+            // Save position if it changed
+            if (PluginConfig.Instance != null)
+            {
+                if (PluginConfig.Instance.menuPosX != _windowRect.x || PluginConfig.Instance.menuPosY != _windowRect.y)
+                {
+                    PluginConfig.Instance.menuPosX = _windowRect.x;
+                    PluginConfig.Instance.menuPosY = _windowRect.y;
+                }
+            }
+
             GUILayout.BeginVertical();
+
+            if (_cameraMovementController != null)
+            {
+                _cameraMovementController.IsEnabled = GUILayout.Toggle(_cameraMovementController.IsEnabled, "Enable CameraMovement");
+            }
 
             // Position
             GUILayout.Label("Position");
@@ -98,7 +112,7 @@ namespace BS_CameraMovement.Components
             GUILayout.Label("FOV", GUILayout.Width(40));
             float fov = _mainCameraFov.fieldOfView;
             string fovStr = fov.ToString("0.##");
-            string newFovStr = GUILayout.TextField(fovStr);
+            string newFovStr = GUILayout.TextField(fovStr, GUILayout.Width(40));
             if (newFovStr != fovStr)
             {
                 if (float.TryParse(newFovStr, out float newFov))
@@ -122,7 +136,7 @@ namespace BS_CameraMovement.Components
             }
             GUILayout.EndHorizontal();
 
-            _qFormat = GUILayout.Toggle(_qFormat, "q_format");
+            PluginConfig.Instance.qFormat = GUILayout.Toggle(PluginConfig.Instance.qFormat, "q_format");
 
             GUILayout.EndVertical();
         }
@@ -146,7 +160,7 @@ namespace BS_CameraMovement.Components
             var position = _mainCameraTrans.transform.position;
             var rotation = _mainCameraTrans.transform.eulerAngles;
             string text;
-            if (_qFormat)
+            if (PluginConfig.Instance.qFormat)
             {
                 text = $"q_{position.x:0.##}_{position.y:0.##}_{position.z:0.##}_{rotation.x:0.#}_{rotation.y:0.#}_{rotation.z:0.#}_{_mainCameraFov.fieldOfView:0.#}";
             }
@@ -182,18 +196,6 @@ namespace BS_CameraMovement.Components
 
             float res;
             int i = 0;
-            
-            // Logic adapted from ChroMapper-CameraMovement
-            // Index 0-2: Pos X, Y, Z (Index might start later if text length is weird? ChroMapper logic is a bit checking length)
-            
-            // ChroMapper logic:
-            // if (text.Length > 8 || !(text.Length > 4 && float.TryParse(text[4], ...))) i++;
-            // This suggests it tries to detect if there is a header or something? Or maybe compatible with some other format.
-            // Let's assume standard format matches the Copy format.
-            // Copy q_: x_y_z_rx_ry_rz_fov (7 items)
-            // Copy tab: x y z FALSE rx ry rz fov (8 items)
-
-            // Let's try to parse simpler first, or stick to ChroMapper logic exactly.
             
             float px = position.x, py = position.y, pz = position.z;
             float rx = rotation.x, ry = rotation.y, rz = rotation.z;
