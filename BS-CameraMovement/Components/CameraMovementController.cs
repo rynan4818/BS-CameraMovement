@@ -70,6 +70,10 @@ namespace BS_CameraMovement.Components
             {
                 Debug.LogError("BS-CameraMovement: Could not determine project path.");
             }
+
+            // Create UI
+            var uiGo = new GameObject("CameraControlUI");
+            uiGo.AddComponent<CameraControlUI>();
         }
 
         public void Tick()
