@@ -4,6 +4,8 @@
 
 外部スクリプトファイル (`SongScript.json`) を読み込むことで、楽曲の再生に合わせてエディタ上のカメラを自動で動かすことができます。
 
+<img width="1282" height="752" alt="image" src="https://github.com/user-attachments/assets/20bc2010-1bc3-4173-875e-6acc998b6a9a" />
+
 ## 機能
 
 *   譜面フォルダ内の `SongScript.json` に基づき、エディタ上のメインカメラを制御します。
@@ -29,6 +31,7 @@
 7. ScriptMapperで`SongScript.json`を更新すると、BS-CameraMovementが自動で検知してカメラスクリプトを読み込み直しします。
 
 ### UI 操作
+<img width="319" height="298" alt="image" src="https://github.com/user-attachments/assets/d25c7326-a083-4208-b4f7-580f93e714c4" />
 
 *   **Show/Hide Camera UI**: 画面右上のボタンで設定ウィンドウの表示/非表示を切り替えます。
 *   **Enable CameraMovement**: 機能のON/OFFを切り替えます。OFFにすると通常のカメラ操作に戻ります。
