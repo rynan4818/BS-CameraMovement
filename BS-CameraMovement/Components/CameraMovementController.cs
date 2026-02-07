@@ -32,6 +32,7 @@ namespace BS_CameraMovement.Components
         {
             Debug.Log("BS-CameraMovement: CameraMovementController Initializing...");
             _mainCamera = GameObject.Find("Wrapper/MainCamera").GetComponent<Camera>();
+            _mainCamera.rect = new Rect(0, 0.23f, 1f, 0.77f);
             Debug.Log($"usePhysicalProperties:{_mainCamera.usePhysicalProperties}");
 
             // Get project path and script path
