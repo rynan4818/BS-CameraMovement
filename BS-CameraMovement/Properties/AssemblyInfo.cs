@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("BS-CameraMovement")]
-[assembly: AssemblyCopyright("Copyright ©  2026")]
+[assembly: AssemblyCopyright("Copyright ©  2026 Rynan")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

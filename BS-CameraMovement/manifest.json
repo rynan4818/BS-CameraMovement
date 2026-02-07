@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
   "id": "BS_CameraMovement",
   "name": "BS-CameraMovement",
-  "author": "",
+  "author": "Rynan",
   "version": "0.0.1",
   "description": "",
   "gameVersion": "1.20.0",
