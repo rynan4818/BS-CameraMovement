@@ -3,11 +3,12 @@ using Zenject;
 
 namespace BS_CameraMovement.Installers
 {
-    public class BSCameraMovementInstaller : Installer
+    public class BSCameraMovementInstaller : MonoInstaller
     {
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<CameraMovementController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CameraControlUI>().FromNewComponentOnNewGameObject().AsCached().NonLazy();
         }
     }
 }

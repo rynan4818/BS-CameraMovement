@@ -26,7 +26,7 @@ namespace BS_CameraMovement.Components
             _audioTimeSyncController = audioTimeSyncController;
             _cameraMovement = new CameraMovement();
             _audioDataModel = audioDataModel;
-        }
+       }
 
         public void Initialize()
         {
@@ -70,10 +70,6 @@ namespace BS_CameraMovement.Components
             {
                 Debug.LogError("BS-CameraMovement: Could not determine project path.");
             }
-
-            // Create UI
-            var uiGo = new GameObject("CameraControlUI");
-            uiGo.AddComponent<CameraControlUI>();
         }
 
         public void Tick()

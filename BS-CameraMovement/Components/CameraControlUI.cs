@@ -1,38 +1,66 @@
+using BeatmapEditor3D.Views;
+using System;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Zenject;
-using System.Text.RegularExpressions;
-using System;
 
 namespace BS_CameraMovement.Components
 {
     public class CameraControlUI : MonoBehaviour
     {
-        private Camera _mainCamera;
+        private Camera _mainCameraFov;
+        private Camera _mainCameraTrans;
         private Rect _windowRect = new Rect(20, 20, 300, 250);
         private bool _showMenu = true;
         
         // Settings
-        private bool _qFormat = false;
+        private bool _qFormat = true;
+
+        private BeatmapObjectsInputBinder _inputBinder;
+
+        [Inject]
+        private void Constractor(BeatmapObjectsInputBinder beatmapObjectsInputBinder)
+        {
+            _inputBinder = beatmapObjectsInputBinder;
+        }
 
         void Start()
         {
             // Find Main Camera if not injected
-            if (_mainCamera == null)
+            if (_mainCameraFov == null)
             {
                 var cameraObj = GameObject.Find("Wrapper/MainCamera");
                 if (cameraObj != null)
                 {
-                    _mainCamera = cameraObj.GetComponent<Camera>();
+                    _mainCameraFov = cameraObj.GetComponent<Camera>();
                 }
+            }
+            if (_mainCameraTrans == null)
+            {
+                _mainCameraTrans = Camera.main;
             }
         }
 
         void OnGUI()
         {
-            if (_mainCamera == null) return;
+            if (_mainCameraFov == null) return;
+
+            // Prevent input conflict
+            bool isInputActive = GUIUtility.keyboardControl != 0;
+            if (_inputBinder != null)
+            {
+                if (isInputActive)
+                {
+                    _inputBinder.Disable();
+                }
+                else if (!isInputActive)
+                {
+                    _inputBinder.Enable();
+                }
+            }
 
             // Toggle Menu Button
-            if (GUI.Button(new Rect(10, 10, 100, 20), _showMenu ? "Hide Camera UI" : "Show Camera UI"))
+            if (GUI.Button(new Rect(Screen.width - 130, 10, 120, 20), _showMenu ? "Hide Camera UI" : "Show Camera UI"))
             {
                 _showMenu = !_showMenu;
             }
@@ -52,30 +80,30 @@ namespace BS_CameraMovement.Components
             // Position
             GUILayout.Label("Position");
             GUILayout.BeginHorizontal();
-            DrawFloatField("X", _mainCamera.transform.position.x, (v) => { var p = _mainCamera.transform.position; p.x = v; _mainCamera.transform.position = p; });
-            DrawFloatField("Y", _mainCamera.transform.position.y, (v) => { var p = _mainCamera.transform.position; p.y = v; _mainCamera.transform.position = p; });
-            DrawFloatField("Z", _mainCamera.transform.position.z, (v) => { var p = _mainCamera.transform.position; p.z = v; _mainCamera.transform.position = p; });
+            DrawFloatField("X", _mainCameraTrans.transform.position.x, (v) => { var p = _mainCameraTrans.transform.position; p.x = v; _mainCameraTrans.transform.position = p; });
+            DrawFloatField("Y", _mainCameraTrans.transform.position.y, (v) => { var p = _mainCameraTrans.transform.position; p.y = v; _mainCameraTrans.transform.position = p; });
+            DrawFloatField("Z", _mainCameraTrans.transform.position.z, (v) => { var p = _mainCameraTrans.transform.position; p.z = v; _mainCameraTrans.transform.position = p; });
             GUILayout.EndHorizontal();
 
             // Rotation
             GUILayout.Label("Rotation");
             GUILayout.BeginHorizontal();
-            DrawFloatField("X", _mainCamera.transform.eulerAngles.x, (v) => { var r = _mainCamera.transform.eulerAngles; r.x = v; _mainCamera.transform.eulerAngles = r; });
-            DrawFloatField("Y", _mainCamera.transform.eulerAngles.y, (v) => { var r = _mainCamera.transform.eulerAngles; r.y = v; _mainCamera.transform.eulerAngles = r; });
-            DrawFloatField("Z", _mainCamera.transform.eulerAngles.z, (v) => { var r = _mainCamera.transform.eulerAngles; r.z = v; _mainCamera.transform.eulerAngles = r; });
+            DrawFloatField("X", _mainCameraTrans.transform.eulerAngles.x, (v) => { var r = _mainCameraTrans.transform.eulerAngles; r.x = v; _mainCameraTrans.transform.eulerAngles = r; });
+            DrawFloatField("Y", _mainCameraTrans.transform.eulerAngles.y, (v) => { var r = _mainCameraTrans.transform.eulerAngles; r.y = v; _mainCameraTrans.transform.eulerAngles = r; });
+            DrawFloatField("Z", _mainCameraTrans.transform.eulerAngles.z, (v) => { var r = _mainCameraTrans.transform.eulerAngles; r.z = v; _mainCameraTrans.transform.eulerAngles = r; });
             GUILayout.EndHorizontal();
 
             // FOV
             GUILayout.BeginHorizontal();
             GUILayout.Label("FOV", GUILayout.Width(40));
-            float fov = _mainCamera.fieldOfView;
+            float fov = _mainCameraFov.fieldOfView;
             string fovStr = fov.ToString("0.##");
             string newFovStr = GUILayout.TextField(fovStr);
             if (newFovStr != fovStr)
             {
                 if (float.TryParse(newFovStr, out float newFov))
                 {
-                    _mainCamera.fieldOfView = newFov;
+                    _mainCameraFov.fieldOfView = newFov;
                 }
             }
             GUILayout.EndHorizontal();
@@ -115,16 +143,16 @@ namespace BS_CameraMovement.Components
 
         private void CopyCameraData()
         {
-            var position = _mainCamera.transform.position;
-            var rotation = _mainCamera.transform.eulerAngles;
+            var position = _mainCameraTrans.transform.position;
+            var rotation = _mainCameraTrans.transform.eulerAngles;
             string text;
             if (_qFormat)
             {
-                text = $"q_{position.x:0.##}_{position.y:0.##}_{position.z:0.##}_{rotation.x:0.#}_{rotation.y:0.#}_{rotation.z:0.#}_{_mainCamera.fieldOfView:0.#}";
+                text = $"q_{position.x:0.##}_{position.y:0.##}_{position.z:0.##}_{rotation.x:0.#}_{rotation.y:0.#}_{rotation.z:0.#}_{_mainCameraFov.fieldOfView:0.#}";
             }
             else
             {
-                text = $"{position.x:0.##}\t{position.y:0.##}\t{position.z:0.##}\tFALSE\t{rotation.x:0.#}\t{rotation.y:0.#}\t{rotation.z:0.#}\t{_mainCamera.fieldOfView:0.#}";
+                text = $"{position.x:0.##}\t{position.y:0.##}\t{position.z:0.##}\tFALSE\t{rotation.x:0.#}\t{rotation.y:0.#}\t{rotation.z:0.#}\t{_mainCameraFov.fieldOfView:0.#}";
             }
             GUIUtility.systemCopyBuffer = text;
         }
@@ -134,9 +162,9 @@ namespace BS_CameraMovement.Components
             var cp = GUIUtility.systemCopyBuffer;
             if (string.IsNullOrEmpty(cp)) return;
 
-            var position = _mainCamera.transform.position;
-            var rotation = _mainCamera.transform.eulerAngles;
-            float fov = _mainCamera.fieldOfView;
+            var position = _mainCameraTrans.transform.position;
+            var rotation = _mainCameraTrans.transform.eulerAngles;
+            float fov = _mainCameraFov.fieldOfView;
 
             string[] text;
             bool tabFormat = true;
@@ -202,9 +230,9 @@ namespace BS_CameraMovement.Components
             // FOV
             if (idx < text.Length && float.TryParse(text[idx], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out res)) { fov = res; idx++; }
 
-            _mainCamera.transform.position = new Vector3(px, py, pz);
-            _mainCamera.transform.eulerAngles = new Vector3(rx, ry, rz);
-            _mainCamera.fieldOfView = fov;
+            _mainCameraTrans.transform.position = new Vector3(px, py, pz);
+            _mainCameraTrans.transform.eulerAngles = new Vector3(rx, ry, rz);
+            _mainCameraFov.fieldOfView = fov;
         }
     }
 }
