@@ -19,6 +19,7 @@ namespace BS_CameraMovement
         {
             Instance = this;
             Log = logger;
+            zenjector.UseLogger(Log);
             Log.Info("BS-CameraMovement initialized.");
 
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();

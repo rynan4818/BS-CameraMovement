@@ -135,7 +135,7 @@ namespace BS_CameraMovement.Components
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log($"CameraMovement:JSON file syntax error. {ex.Message}");
+                    Plugin.Log.Error($"CameraMovement:JSON file syntax error. {ex.Message}");
                 }
                 if (movementScriptJson != null && movementScriptJson.Jsonmovement != null)
                 {
@@ -223,7 +223,7 @@ namespace BS_CameraMovement.Components
                         Movements.Add(newMovement);
                     }
                     TotalDurationError = duration_sum - (float)duration_sumd;
-                    // Debug.Log($"Duration total error: {Math.Round(TotalDurationError, 4, MidpointRounding.AwayFromZero) * 1000f}ms");
+                    // Plugin.Log.Error($"Duration total error: {Math.Round(TotalDurationError, 4, MidpointRounding.AwayFromZero) * 1000f}ms");
                     return true;
                 }
                 return false;
@@ -290,7 +290,7 @@ namespace BS_CameraMovement.Components
                 {
                     if (data.Movements.Count == 0)
                     {
-                        Debug.Log("CameraMovement:No movement data!");
+                        Plugin.Log.Info("CameraMovement:No movement data!");
                         return false;
                     }
                     eventID = 0;
@@ -299,7 +299,7 @@ namespace BS_CameraMovement.Components
                     UpdatePosAndRot();
                     dataLoaded = true;
 
-                    Debug.Log($"CameraMovement:Found {data.Movements.Count} entries in: {path}");
+                    Plugin.Log.Info($"CameraMovement:Found {data.Movements.Count} entries in: {path}");
                     return true;
                 }
             }

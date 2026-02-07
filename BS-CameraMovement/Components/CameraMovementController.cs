@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEngine;
 using Zenject;
@@ -7,7 +8,7 @@ using BS_CameraMovement.Configuration;
 
 namespace BS_CameraMovement.Components
 {
-    public class CameraMovementController : IInitializable, ITickable
+    public class CameraMovementController : IInitializable, ITickable, IDisposable
     {
         private BeatmapProjectManager _beatmapProjectManager;
         private IAudioTimeSource _audioTimeSyncController;
@@ -17,6 +18,10 @@ namespace BS_CameraMovement.Components
         private string _scriptPath;
         private bool _isActive;
         public float beforeSeconds;
+
+        private FileSystemWatcher _fileWatcher;
+        private bool _reloadPending;
+        private bool disposedValue;
 
         public bool IsEnabled
         {
@@ -42,10 +47,10 @@ namespace BS_CameraMovement.Components
 
         public void Initialize()
         {
-            Debug.Log("BS-CameraMovement: CameraMovementController Initializing...");
+            Plugin.Log.Info("BS-CameraMovement: CameraMovementController Initializing...");
             _mainCamera = GameObject.Find("Wrapper/MainCamera").GetComponent<Camera>();
             UpdateCameraState();
-            Debug.Log($"usePhysicalProperties:{_mainCamera.usePhysicalProperties}");
+            Plugin.Log.Info($"usePhysicalProperties:{_mainCamera.usePhysicalProperties}");
 
             // Get project path and script path
             string projectPath = _beatmapProjectManager.originalBeatmapProject;
@@ -58,30 +63,57 @@ namespace BS_CameraMovement.Components
             if (!string.IsNullOrEmpty(projectPath))
             {
                 _scriptPath = Path.Combine(projectPath, "SongScript.json");
-                Debug.Log($"BS-CameraMovement: Looking for script at {_scriptPath}");
+                Plugin.Log.Info($"BS-CameraMovement: Looking for script at {_scriptPath}");
                 
                 if (File.Exists(_scriptPath))
                 {
                     bool loaded = _cameraMovement.LoadCameraData(_scriptPath);
                     if (loaded)
                     {
-                        Debug.Log("BS-CameraMovement: SongScript.json loaded successfully.");
+                        Plugin.Log.Info("BS-CameraMovement: SongScript.json loaded successfully.");
                         _isActive = true;
+                        InitializeWatcher(projectPath);
                     }
                     else
                     {
-                        Debug.LogWarning("BS-CameraMovement: Failed to load SongScript.json data.");
+                        Plugin.Log.Warn("BS-CameraMovement: Failed to load SongScript.json data.");
                     }
                 }
                 else
                 {
-                    Debug.Log("BS-CameraMovement: SongScript.json not found in project directory.");
+                    Plugin.Log.Info("BS-CameraMovement: SongScript.json not found in project directory.");
                 }
             }
             else
             {
-                Debug.LogError("BS-CameraMovement: Could not determine project path.");
+                Plugin.Log.Error("BS-CameraMovement: Could not determine project path.");
             }
+        }
+
+        private void InitializeWatcher(string directory)
+        {
+            if (_fileWatcher != null) return;
+            try
+            {
+                _fileWatcher = new FileSystemWatcher
+                {
+                    Path = directory,
+                    NotifyFilter = NotifyFilters.LastWrite,
+                    Filter = "SongScript.json",
+                    EnableRaisingEvents = true
+                };
+                _fileWatcher.Changed += OnFileChanged;
+                Plugin.Log.Info($"BS-CameraMovement: Started watching {directory} for SongScript.json changes.");
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log.Error($"BS-CameraMovement: Failed to initialize file watcher. {ex.Message}");
+            }
+        }
+
+        private void OnFileChanged(object sender, FileSystemEventArgs e)
+        {
+            _reloadPending = true;
         }
 
         private void UpdateCameraState()
@@ -102,6 +134,20 @@ namespace BS_CameraMovement.Components
 
         public void Tick()
         {
+            if (_reloadPending)
+            {
+                _reloadPending = false;
+                Plugin.Log.Info("BS-CameraMovement: Detected change in SongScript.json. Reloading...");
+                if (_cameraMovement.LoadCameraData(_scriptPath))
+                {
+                    Plugin.Log.Info("BS-CameraMovement: Reloaded successfully.");
+                }
+                else
+                {
+                    Plugin.Log.Warn("BS-CameraMovement: Failed to reload data.");
+                }
+            }
+
             if (!PluginConfig.Instance.enable || !_isActive || _mainCamera == null) return;
            
             float currentSeconds = _audioDataModel.bpmData.BeatToSeconds(_audioTimeSyncController.songTime);
@@ -116,6 +162,41 @@ namespace BS_CameraMovement.Components
             }
             beforeSeconds = currentSeconds;
             _cameraMovement.CameraUpdate(currentSeconds, _mainCamera);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: マネージド状態を破棄します (マネージド オブジェクト)
+                }
+
+                // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、ファイナライザーをオーバーライドします
+                // TODO: 大きなフィールドを null に設定します
+                if (_fileWatcher != null)
+                {
+                    _fileWatcher.Changed -= OnFileChanged;
+                    _fileWatcher.Dispose();
+                    _fileWatcher = null;
+                }
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: 'Dispose(bool disposing)' にアンマネージド リソースを解放するコードが含まれる場合にのみ、ファイナライザーをオーバーライドします
+        // ~CameraMovementController()
+        // {
+        //     // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
