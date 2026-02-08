@@ -1,3 +1,9 @@
+// MovementScript周りは、すのーさんのCameraPlus(https://github.com/Snow1226/CameraPlus)のソースコードをコピー・修正して使用しています。
+// コピー元:https://github.com/Snow1226/CameraPlus/blob/master/CameraPlus/Configuration/MovementScriptJson.cs
+// コピー元:https://github.com/Snow1226/CameraPlus/blob/master/CameraPlus/Behaviours/CameraMovement.cs
+// CameraPlusの著作権表記・ライセンスは以下の通りです。
+// https://github.com/Snow1226/CameraPlus/blob/master/LICENSE
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;

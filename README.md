@@ -42,3 +42,9 @@
     *   **Copy**: 現在のカメラ情報をテキストとしてクリップボードにコピーします。
     *   **Paste**: クリップボードのテキスト情報を読み取り、カメラに適用します。
     *   **q_format**: チェックを入れると、コピー時のフォーマットが `q_x_y_z_rx_ry_rz_fov` 形式になります（チェックを外すとタブ区切り形式）。
+
+## プラグイン製作の参考
+`Components/CameraMovement.cs`ファイルは、すのーさんの[CameraPlus](https://github.com/Snow1226/CameraPlus)のソースコードをコピー・修正して使用しています。カメラ移動部分の処理は全く同じです。
+
+CameraPlusの著作権表記・ライセンスは以下の通りです。
+- https://github.com/Snow1226/CameraPlus/blob/master/LICENSE
