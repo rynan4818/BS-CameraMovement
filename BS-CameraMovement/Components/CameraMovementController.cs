@@ -8,12 +8,13 @@ using BS_CameraMovement.Configuration;
 
 namespace BS_CameraMovement.Components
 {
-    public class CameraMovementController : IInitializable, ITickable, IDisposable
+    public class CameraMovementController : IInitializable, ILateTickable, IDisposable
     {
         private BeatmapProjectManager _beatmapProjectManager;
         private IAudioTimeSource _audioTimeSyncController;
         private CameraMovement _cameraMovement;
         private AudioDataModel _audioDataModel;
+        private OscReceiverController oscReceiverController;
         private Camera _mainCamera;
         private string _scriptPath;
         private bool _isActive;
@@ -37,13 +38,15 @@ namespace BS_CameraMovement.Components
         public CameraMovementController(
             BeatmapProjectManager beatmapProjectManager,
             IAudioTimeSource audioTimeSyncController,
-            AudioDataModel audioDataModel)
+            AudioDataModel audioDataModel,
+            OscReceiverController oscReceiverController)
         {
             _beatmapProjectManager = beatmapProjectManager;
             _audioTimeSyncController = audioTimeSyncController;
             _cameraMovement = new CameraMovement();
             _audioDataModel = audioDataModel;
-       }
+            this.oscReceiverController = oscReceiverController;
+        }
 
         public void Initialize()
         {
@@ -134,7 +137,7 @@ namespace BS_CameraMovement.Components
             }
         }
 
-        public void Tick()
+        public void LateTick()
         {
             if (_reloadPending)
             {
@@ -155,6 +158,7 @@ namespace BS_CameraMovement.Components
             float currentSeconds = _audioDataModel.bpmData.BeatToSeconds(_audioTimeSyncController.songTime);
             if (beforeSeconds == currentSeconds)
             {
+                oscReceiverController.hasData = false;
                 return;
             }
             if (currentSeconds < beforeSeconds)
@@ -163,6 +167,12 @@ namespace BS_CameraMovement.Components
                 beforeSeconds = 0;
             }
             beforeSeconds = currentSeconds;
+            if (oscReceiverController.hasData)
+            {
+                oscReceiverController.hasData = false;
+                return;
+            }
+            oscReceiverController.hasData = false;
             _cameraMovement.CameraUpdate(currentSeconds, _mainCamera);
         }
 

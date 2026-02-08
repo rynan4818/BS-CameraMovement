@@ -120,9 +120,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\CameraMovement.cs" />
     <Compile Include="Components\CameraControlUI.cs" />
+    <Compile Include="Components\CameraMovement.cs" />
     <Compile Include="Components\CameraMovementController.cs" />
+    <Compile Include="Components\OscReceiverController.cs" />
     <Compile Include="Installers\BSCameraMovementInstaller.cs" />
     <Compile Include="Osc\OscDataTypes.cs" />
     <Compile Include="Osc\OscPacketDecoder.cs" />
