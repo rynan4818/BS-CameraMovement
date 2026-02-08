@@ -14,7 +14,8 @@ namespace BS_CameraMovement.Components
         private IAudioTimeSource _audioTimeSyncController;
         private CameraMovement _cameraMovement;
         private AudioDataModel _audioDataModel;
-        private OscReceiverController oscReceiverController;
+        private OscReceiverController _oscReceiverController;
+        private OscCameraReceiver _receiver;
         private Camera _mainCamera;
         private string _scriptPath;
         private bool _isActive;
@@ -39,13 +40,15 @@ namespace BS_CameraMovement.Components
             BeatmapProjectManager beatmapProjectManager,
             IAudioTimeSource audioTimeSyncController,
             AudioDataModel audioDataModel,
-            OscReceiverController oscReceiverController)
+            OscReceiverController oscReceiverController,
+            OscCameraReceiver oscCameraReceiver)
         {
             _beatmapProjectManager = beatmapProjectManager;
             _audioTimeSyncController = audioTimeSyncController;
             _cameraMovement = new CameraMovement();
             _audioDataModel = audioDataModel;
-            this.oscReceiverController = oscReceiverController;
+            _oscReceiverController = oscReceiverController;
+            _receiver = oscCameraReceiver;
         }
 
         public void Initialize()
@@ -158,7 +161,7 @@ namespace BS_CameraMovement.Components
             float currentSeconds = _audioDataModel.bpmData.BeatToSeconds(_audioTimeSyncController.songTime);
             if (beforeSeconds == currentSeconds)
             {
-                oscReceiverController.hasData = false;
+                _receiver.ClearData();
                 return;
             }
             if (currentSeconds < beforeSeconds)
@@ -167,12 +170,12 @@ namespace BS_CameraMovement.Components
                 beforeSeconds = 0;
             }
             beforeSeconds = currentSeconds;
-            if (oscReceiverController.hasData)
+            if (_receiver.HasData)
             {
-                oscReceiverController.hasData = false;
+                _receiver.ClearData();
                 return;
             }
-            oscReceiverController.hasData = false;
+            _receiver.ClearData();
             _cameraMovement.CameraUpdate(currentSeconds, _mainCamera);
         }
 

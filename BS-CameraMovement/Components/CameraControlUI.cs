@@ -142,6 +142,7 @@ namespace BS_CameraMovement.Components
             GUILayout.EndHorizontal();
 
             PluginConfig.Instance.qFormat = GUILayout.Toggle(PluginConfig.Instance.qFormat, "q_format");
+            PluginConfig.Instance.playerOsc = GUILayout.Toggle(PluginConfig.Instance.playerOsc, "Player OSC Receiver");
 
             GUILayout.EndVertical();
         }

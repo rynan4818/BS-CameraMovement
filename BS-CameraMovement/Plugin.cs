@@ -26,6 +26,7 @@ namespace BS_CameraMovement
             Log.Debug("Config loaded");
 
             zenjector.Install<BSCameraMovementInstaller, BeatmapLevelEditorInstaller>();
+            zenjector.Install<GamePlayerInstaller>(Location.StandardPlayer);
         }
 
         [OnStart]

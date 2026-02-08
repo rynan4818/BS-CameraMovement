@@ -13,7 +13,8 @@ namespace BS_CameraMovement.Configuration
 
         public virtual float menuPosX { get; set; } = 50f;
         public virtual float menuPosY { get; set; } = 50f;
-        public virtual int ocsPort { get; set; } = 42818;
+        public virtual int oscPort { get; set; } = 42818;
+        public virtual bool playerOsc { get; set; } = false;
 
         /// <summary>
         /// これは、BSIPAが設定ファイルを読み込むたびに（ファイルの変更が検出されたときを含めて）呼び出されます

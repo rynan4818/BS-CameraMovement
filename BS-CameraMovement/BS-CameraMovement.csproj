@@ -123,8 +123,11 @@
     <Compile Include="Components\CameraControlUI.cs" />
     <Compile Include="Components\CameraMovement.cs" />
     <Compile Include="Components\CameraMovementController.cs" />
+    <Compile Include="Components\OscCameraReceiver.cs" />
     <Compile Include="Components\OscReceiverController.cs" />
+    <Compile Include="Components\PlayerCameraController.cs" />
     <Compile Include="Installers\BSCameraMovementInstaller.cs" />
+    <Compile Include="Installers\GamePlayerInstaller.cs" />
     <Compile Include="Osc\OscDataTypes.cs" />
     <Compile Include="Osc\OscPacketDecoder.cs" />
     <Compile Include="Osc\OscServer.cs" />
