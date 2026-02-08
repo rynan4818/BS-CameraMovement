@@ -30,6 +30,9 @@
 6. タイムラインを再生すると、スクリプトに従ってカメラが動きます。
 7. ScriptMapperで`SongScript.json`を更新すると、BS-CameraMovementが自動で検知してカメラスクリプトを読み込み直しします。
 
+## 注意点
+**`CustomLevels`フォルダの譜面を公式譜面エディタで開くとv4フォーマットに変換されるなど、譜面のID(ハッシュ値)が変わってしまい別の譜面になってしまいます。ScoreSaberやBeatLeaderなどのスコア送信ができなくなるので注意してください。譜面フォルダ名をデフォルトの物から変更することをオススメします**
+
 ### UI 操作
 <img width="319" height="298" alt="image" src="https://github.com/user-attachments/assets/d25c7326-a083-4208-b4f7-580f93e714c4" />
 
