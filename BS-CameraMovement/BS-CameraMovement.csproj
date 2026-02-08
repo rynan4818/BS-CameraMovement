@@ -124,6 +124,9 @@
     <Compile Include="Components\CameraControlUI.cs" />
     <Compile Include="Components\CameraMovementController.cs" />
     <Compile Include="Installers\BSCameraMovementInstaller.cs" />
+    <Compile Include="Osc\OscDataTypes.cs" />
+    <Compile Include="Osc\OscPacketDecoder.cs" />
+    <Compile Include="Osc\OscServer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
