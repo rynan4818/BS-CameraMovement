@@ -121,11 +121,13 @@ namespace BS_CameraMovement.Components
             if (_mainCamera == null) return;
             if (PluginConfig.Instance.enable)
             {
-                _mainCamera.rect = new Rect(0, 0.23f, 1f, 0.77f);
+                _mainCamera.rect = new Rect(0.05f, 0.23f, 0.95f, 0.77f);
             }
             else
             {
                 _mainCamera.rect = new Rect(0, 0, 1f, 1f);
+                // TransformはCamera.main、FOVはWrapper/MainCameraに設定が必要な理由
+                // https://github.com/rynan4818/BS-CameraMovement/wiki/%E3%82%AB%E3%83%A1%E3%83%A9%E3%81%AE%E5%88%B6%E5%BE%A1%E6%96%B9%E6%B3%95
                 Camera.main.transform.position = new Vector3(0, 2, -6);
                 Camera.main.transform.eulerAngles = new Vector3(15, 0, 0);
                 _mainCamera.fieldOfView = 60;
