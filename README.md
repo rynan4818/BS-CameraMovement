@@ -48,3 +48,8 @@
 
 CameraPlusの著作権表記・ライセンスは以下の通りです。
 - https://github.com/Snow1226/CameraPlus/blob/master/LICENSE
+
+再生箇所のシーク処理は、denpadokeiさんの[PracticePlugin](https://github.com/denpadokei/PracticePlugin)のソースコードをコピー・修正して使用しています。
+
+PracticePluginの著作権表記・ライセンスは以下の通りです。
+- https://github.com/denpadokei/PracticePlugin/blob/master/LICENSE

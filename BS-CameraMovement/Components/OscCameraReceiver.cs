@@ -17,7 +17,7 @@ namespace BS_CameraMovement.Components
         public Vector3 TargetPos { get; private set; }
         public Quaternion TargetRot { get; private set; }
         public float TargetFov { get; private set; }
-        public float TargetSongTime { get; private set; }
+        public float TargetSongTime { get; private set; } = -1f;
         public bool HasData { get; set; } = false;
 
         public void Start(int port)
@@ -55,7 +55,7 @@ namespace BS_CameraMovement.Components
                     switch (message.Address)
                     {
                         case "/camera/info":
-                            if (message.Arguments.Count >= 9)
+                            if (message.Arguments.Count >= 11)
                             {
                                 float x = message.GetFloat(1);
                                 float y = message.GetFloat(2);
@@ -69,7 +69,8 @@ namespace BS_CameraMovement.Components
                                 TargetRot = new Quaternion(rx, ry, rz, rw);
 
                                 TargetFov = message.GetFloat(8);
-                                TargetSongTime = message.GetFloat(9);
+                                // index 9 is beat, index 10 is seconds
+                                TargetSongTime = message.GetFloat(10);
                                 HasData = true;
                             }
                             break;
