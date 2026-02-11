@@ -201,8 +201,6 @@ namespace BS_CameraMovement.Components
             }
 
             float res;
-            int i = 0;
-            
             float px = position.x, py = position.y, pz = position.z;
             float rx = rotation.x, ry = rotation.y, rz = rotation.z;
 
