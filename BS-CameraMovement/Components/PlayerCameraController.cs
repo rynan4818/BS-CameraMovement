@@ -33,6 +33,8 @@ namespace BS_CameraMovement.Components
         };
 
         private DiContainer _container;
+        private float _lastDataTime = -10f;
+        private CanvasGroup _pauseMenuCanvasGroup;
 
         [Inject]
         public void Construct(
@@ -137,25 +139,92 @@ namespace BS_CameraMovement.Components
 
         public void Update()
         {
-            if (_receiver == null || !_receiver.HasData || _oscCamera == null) return;
-
-            var (pos, rot, fov, songTime) = _receiver.ReadData();
-            _receiver.ClearData();
-
-            _oscCamera.transform.position = pos;
-            _oscCamera.transform.rotation = rot;
-            if (fov > 0)
+            if (_receiver != null && _receiver.HasData)
             {
-                _oscCamera.fieldOfView = fov;
+                _lastDataTime = Time.time;
+
+                if (_oscCamera != null)
+                {
+                    var (pos, rot, fov, songTime) = _receiver.ReadData();
+                    
+                    _oscCamera.transform.position = pos;
+                    _oscCamera.transform.rotation = rot;
+                    if (fov > 0)
+                    {
+                        _oscCamera.fieldOfView = fov;
+                    }
+
+                    // 一時停止中に songTime が指定されていればジャンプ
+                    if (_audioTimeSyncController != null && _audioTimeSyncController.state == AudioTimeSyncController.State.Paused)
+                    {
+                        if (songTime >= 0 && Mathf.Abs(songTime - _audioTimeSyncController.songTime) > Mathf.Epsilon)
+                        {
+                            JumpToTime(songTime);
+                        }
+                    }
+                }
+                // データ読み出し後にフラグを下ろす（カメラがnullでもフラグは消費する）
+                _receiver.ClearData();
             }
 
-            // 一時停止中に songTime が指定されていればジャンプ
-            if (_audioTimeSyncController != null && _audioTimeSyncController.state == AudioTimeSyncController.State.Paused)
+            // 一時停止中のメニュー表示制御
+            try
             {
-                if (songTime >= 0 && Mathf.Abs(songTime - _audioTimeSyncController.songTime) > Mathf.Epsilon)
+                if (_audioTimeSyncController != null && _audioTimeSyncController.state == AudioTimeSyncController.State.Paused)
                 {
-                    JumpToTime(songTime);
+                    UpdatePauseMenuVisibility();
                 }
+                else
+                {
+                    _pauseMenuCanvasGroup = null;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Plugin.Log.Error($"Error in UpdatePauseMenuVisibility: {ex.Message}");
+            }
+        }
+
+        private float _nextFindTime = 0f;
+
+        private void UpdatePauseMenuVisibility()
+        {
+            if (_pauseMenuCanvasGroup == null)
+            {
+                // 毎フレーム検索すると重いため、見つからない場合は1秒間隔でリトライする
+                if (Time.time < _nextFindTime) return;
+                _nextFindTime = Time.time + 1.0f;
+
+                // ユーザー指定のパスで検索を試みる
+                var mainBar = GameObject.Find("Wrapper/StandardGameplay/PauseMenu/Wrapper/MenuWrapper/Canvas/MainBar");
+                if (mainBar == null)
+                {
+                    // パスで見つからない場合は名前だけで検索を試みる（重い処理なので頻度注意）
+                    mainBar = GameObject.Find("MainBar");
+                }
+
+                if (mainBar != null)
+                {
+                    Plugin.Log.Info("PlayerCameraController: PauseMenu MainBar found.");
+                    _pauseMenuCanvasGroup = mainBar.GetComponent<CanvasGroup>();
+                    if (_pauseMenuCanvasGroup == null)
+                    {
+                        _pauseMenuCanvasGroup = mainBar.AddComponent<CanvasGroup>();
+                    }
+                }
+            }
+
+            if (_pauseMenuCanvasGroup != null)
+            {
+                // OSCデータ受信から3秒間は非表示（透明度を0にする）
+                float targetAlpha = (Time.time - _lastDataTime < 3f) ? 0f : 1f;
+                // スムーズに変化させる
+                _pauseMenuCanvasGroup.alpha = Mathf.Lerp(_pauseMenuCanvasGroup.alpha, targetAlpha, Time.deltaTime * 10f);
+
+                // 完全に透明な時はインタラクションも無効化する
+                bool isVisible = _pauseMenuCanvasGroup.alpha > 0.05f;
+                _pauseMenuCanvasGroup.interactable = isVisible;
+                _pauseMenuCanvasGroup.blocksRaycasts = isVisible;
             }
         }
 
