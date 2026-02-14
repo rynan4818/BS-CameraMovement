@@ -1,5 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
+using IPA.Config.Stores.Attributes;
+using IPA.Config.Stores.Converters;
+using UnityEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace BS_CameraMovement.Configuration
@@ -15,6 +18,9 @@ namespace BS_CameraMovement.Configuration
         public virtual float menuPosY { get; set; } = 50f;
         public virtual int oscPort { get; set; } = 42818;
         public virtual bool playerOsc { get; set; } = false;
+
+        [UseConverter(typeof(EnumConverter<KeyCode>))]
+        public virtual KeyCode togglePlayerOscKey { get; set; } = KeyCode.F6;
 
         /// <summary>
         /// これは、BSIPAが設定ファイルを読み込むたびに（ファイルの変更が検出されたときを含めて）呼び出されます

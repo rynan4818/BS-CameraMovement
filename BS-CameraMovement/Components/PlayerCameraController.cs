@@ -55,14 +55,11 @@ namespace BS_CameraMovement.Components
 
         public void Start()
         {
-            if (!PluginConfig.Instance.playerOsc)
+            if (PluginConfig.Instance.playerOsc)
             {
-                _showGui = false;
-                enabled = false;
-                return;
+                CreateOscCamera();
+                StartOsc();
             }
-            CreateOscCamera();
-            StartOsc();
         }
 
         private void StartOsc()
@@ -75,8 +72,7 @@ namespace BS_CameraMovement.Components
         {
             if (_receiver != null)
             {
-                _receiver.Dispose();
-                _receiver = null;
+                _receiver.Stop();
             }
         }
 
@@ -139,6 +135,11 @@ namespace BS_CameraMovement.Components
 
         public void Update()
         {
+            if (Input.GetKeyDown(PluginConfig.Instance.togglePlayerOscKey))
+            {
+                TogglePlayerOsc();
+            }
+
             if (_receiver != null && _receiver.HasData)
             {
                 _lastDataTime = Time.time;
@@ -392,11 +393,7 @@ namespace BS_CameraMovement.Components
 
             if (GUILayout.Button("Disable Player OSC"))
             {
-                PluginConfig.Instance.playerOsc = false;
-                StopOsc();
-                DestroyOscCamera();
-                _showGui = false;
-                enabled = false;
+                TogglePlayerOsc();
             }
 
             GUILayout.EndVertical();
@@ -407,6 +404,27 @@ namespace BS_CameraMovement.Components
         {
             StopOsc();
             DestroyOscCamera();
+        }
+
+        private void TogglePlayerOsc()
+        {
+            bool newState = !PluginConfig.Instance.playerOsc;
+            PluginConfig.Instance.playerOsc = newState;
+
+            if (newState)
+            {
+                CreateOscCamera();
+                StartOsc();
+                _showGui = true;
+                Plugin.Log.Info("Player OSC enabled.");
+            }
+            else
+            {
+                StopOsc();
+                DestroyOscCamera();
+                _showGui = false;
+                Plugin.Log.Info("Player OSC disabled.");
+            }
         }
     }
 }
