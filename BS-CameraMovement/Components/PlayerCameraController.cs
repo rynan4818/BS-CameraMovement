@@ -21,7 +21,7 @@ namespace BS_CameraMovement.Components
         private BasicBeatmapObjectManager _beatmapObjectManager;
 
         private bool _showGui = true;
-        private Rect _windowRect = new Rect(10, 10, 220, 60);
+        private Rect _windowRect = new Rect(10, 10, 180, 50);
 
         private GameObject _cameraObject;
         private Camera _oscCamera;
@@ -135,7 +135,9 @@ namespace BS_CameraMovement.Components
 
         public void Update()
         {
-            if (Input.GetKeyDown(PluginConfig.Instance.togglePlayerOscKey))
+            // Shiftキーが押されている場合のみトグル判定を行う
+            bool shiftPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+            if (shiftPressed && Input.GetKeyDown(PluginConfig.Instance.togglePlayerOscKey))
             {
                 TogglePlayerOsc();
             }
@@ -391,7 +393,8 @@ namespace BS_CameraMovement.Components
 
             GUILayout.BeginVertical();
 
-            if (GUILayout.Button("Disable Player OSC"))
+            string keyName = PluginConfig.Instance.togglePlayerOscKey.ToString();
+            if (GUILayout.Button($"Disable(Shift+{keyName})"))
             {
                 TogglePlayerOsc();
             }
