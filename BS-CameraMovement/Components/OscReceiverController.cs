@@ -1,5 +1,5 @@
-﻿using BeatmapEditor3D;
-using BeatmapEditor3D.DataModels;
+using BeatmapEditor3D;
+using BeatmapEditor3D.Controller;
 using BS_CameraMovement.Configuration;
 using System;
 using UnityEngine;
@@ -10,15 +10,15 @@ namespace BS_CameraMovement.Components
     public class OscReceiverController : IInitializable, ITickable, IDisposable
     {
         private SignalBus _signalBus;
-        private IReadonlyBeatmapState _readonlyBeatmapState;
+        private ISongPreviewController _songPreviewController;
         private OscCameraReceiver _receiver;
         private Camera _mainCameraFov;
         private Camera _mainCameraTrans;
 
-        public OscReceiverController(SignalBus signalBus, IReadonlyBeatmapState readonlyBeatmapState, OscCameraReceiver oscCameraReceiver)
+        public OscReceiverController(SignalBus signalBus, ISongPreviewController songPreviewController, OscCameraReceiver oscCameraReceiver)
         {
             _signalBus = signalBus;
-            _readonlyBeatmapState = readonlyBeatmapState;
+            _songPreviewController = songPreviewController;
             _receiver = oscCameraReceiver;
         }
 
@@ -44,11 +44,11 @@ namespace BS_CameraMovement.Components
         {
             if (_mainCameraTrans == null || _mainCameraFov == null || _receiver == null || !_receiver.HasData) return;
 
-            var (pos, rot, fov, songTime) = _receiver.ReadData();
+            var (pos, rot, fov, _, songTime) = _receiver.ReadData();
 
             // エディタの再生 停止状態の判定方法
             // https://github.com/rynan4818/BS-CameraMovement/wiki/%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF%E3%81%AE%E5%86%8D%E7%94%9F-%E5%81%9C%E6%AD%A2%E7%8A%B6%E6%85%8B%E3%81%AE%E5%88%A4%E5%AE%9A%E6%96%B9%E6%B3%95
-            if (_readonlyBeatmapState.isPlaying)
+            if (_songPreviewController.isPlaying)
             {
                 _receiver.ClearData();
             }

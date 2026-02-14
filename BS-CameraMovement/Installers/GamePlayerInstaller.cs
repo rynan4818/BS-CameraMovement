@@ -1,4 +1,4 @@
-﻿using BS_CameraMovement.Components;
+using BS_CameraMovement.Components;
 using Zenject;
 
 namespace BS_CameraMovement.Installers

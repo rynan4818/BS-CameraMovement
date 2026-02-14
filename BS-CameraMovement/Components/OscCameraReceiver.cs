@@ -1,4 +1,3 @@
-using BS_CameraMovement.Configuration;
 using BS_CameraMovement.Osc;
 using System;
 using UnityEngine;
@@ -17,6 +16,7 @@ namespace BS_CameraMovement.Components
         public Vector3 TargetPos { get; private set; }
         public Quaternion TargetRot { get; private set; }
         public float TargetFov { get; private set; }
+        public float TargetBeatTime { get; private set; } = -1f;
         public float TargetSongTime { get; private set; } = -1f;
         public bool HasData { get; set; } = false;
 
@@ -69,7 +69,7 @@ namespace BS_CameraMovement.Components
                                 TargetRot = new Quaternion(rx, ry, rz, rw);
 
                                 TargetFov = message.GetFloat(8);
-                                // index 9 is beat, index 10 is seconds
+                                TargetBeatTime = message.GetFloat(9);
                                 TargetSongTime = message.GetFloat(10);
                                 HasData = true;
                             }
@@ -86,11 +86,11 @@ namespace BS_CameraMovement.Components
         /// <summary>
         /// ロック付きでデータを読み取るヘルパー。読み取り後HasDataの制御は呼び出し側に委ねる。
         /// </summary>
-        public (Vector3 pos, Quaternion rot, float fov, float songTime) ReadData()
+        public (Vector3 pos, Quaternion rot, float fov, float songTime, float beatTime) ReadData()
         {
             lock (_lock)
             {
-                return (TargetPos, TargetRot, TargetFov, TargetSongTime);
+                return (TargetPos, TargetRot, TargetFov, TargetSongTime, TargetBeatTime);
             }
         }
 

@@ -148,7 +148,7 @@ namespace BS_CameraMovement.Components
 
                 if (_oscCamera != null)
                 {
-                    var (pos, rot, fov, songTime) = _receiver.ReadData();
+                    var (pos, rot, fov, songTime, _) = _receiver.ReadData();
                     
                     _oscCamera.transform.position = pos;
                     _oscCamera.transform.rotation = rot;

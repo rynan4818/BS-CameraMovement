@@ -1,7 +1,7 @@
-// MovementScriptü‚è‚ÍA‚·‚Ì[‚³‚ñ‚ÌCameraPlus(https://github.com/Snow1226/CameraPlus)‚Ìƒ\[ƒXƒR[ƒh‚ğƒRƒs[EC³‚µ‚Äg—p‚µ‚Ä‚¢‚Ü‚·B
-// ƒRƒs[Œ³:https://github.com/Snow1226/CameraPlus/blob/master/CameraPlus/Configuration/MovementScriptJson.cs
-// ƒRƒs[Œ³:https://github.com/Snow1226/CameraPlus/blob/master/CameraPlus/Behaviours/CameraMovement.cs
-// CameraPlus‚Ì’˜ìŒ •\‹LEƒ‰ƒCƒZƒ“ƒX‚ÍˆÈ‰º‚Ì’Ê‚è‚Å‚·B
+// MovementScriptå‘¨ã‚Šã¯ã€ã™ã®ãƒ¼ã•ã‚“ã®CameraPlus(https://github.com/Snow1226/CameraPlus)ã®ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã‚’ã‚³ãƒ”ãƒ¼ãƒ»ä¿®æ­£ã—ã¦ä½¿ç”¨ã—ã¦ã„ã¾ã™ã€‚
+// ã‚³ãƒ”ãƒ¼å…ƒ:https://github.com/Snow1226/CameraPlus/blob/master/CameraPlus/Configuration/MovementScriptJson.cs
+// ã‚³ãƒ”ãƒ¼å…ƒ:https://github.com/Snow1226/CameraPlus/blob/master/CameraPlus/Behaviours/CameraMovement.cs
+// CameraPlusã®è‘—ä½œæ¨©è¡¨è¨˜ãƒ»ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ã¯ä»¥ä¸‹ã®é€šã‚Šã§ã™ã€‚
 // https://github.com/Snow1226/CameraPlus/blob/master/LICENSE
 
 using System;

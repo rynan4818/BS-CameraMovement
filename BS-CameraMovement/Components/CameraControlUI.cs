@@ -1,5 +1,4 @@
 using BS_CameraMovement.Configuration;
-using BeatmapEditor3D.Views;
 using System;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -13,13 +12,11 @@ namespace BS_CameraMovement.Components
         private Camera _mainCameraTrans;
         private Rect _windowRect;
 
-        private BeatmapObjectsInputBinder _inputBinder;
         private CameraMovementController _cameraMovementController;
 
         [Inject]
-        public void Constractor(BeatmapObjectsInputBinder beatmapObjectsInputBinder, CameraMovementController cameraMovementController)
+        public void Constractor(CameraMovementController cameraMovementController)
         {
-            _inputBinder = beatmapObjectsInputBinder;
             _cameraMovementController = cameraMovementController;
         }
 
@@ -51,17 +48,6 @@ namespace BS_CameraMovement.Components
 
             // Prevent input conflict
             bool isInputActive = GUIUtility.keyboardControl != 0;
-            if (_inputBinder != null)
-            {
-                if (isInputActive)
-                {
-                    _inputBinder.Disable();
-                }
-                else if (!isInputActive)
-                {
-                    _inputBinder.Enable();
-                }
-            }
 
             // Toggle Menu Button
             if (GUI.Button(new Rect(Screen.width - 130, 10, 120, 20), PluginConfig.Instance.showMenu ? "Hide Camera UI" : "Show Camera UI"))
@@ -140,10 +126,16 @@ namespace BS_CameraMovement.Components
                 PasteCameraData();
             }
             GUILayout.EndHorizontal();
-
-            PluginConfig.Instance.qFormat = GUILayout.Toggle(PluginConfig.Instance.qFormat, "q_format");
-            PluginConfig.Instance.playerOsc = GUILayout.Toggle(PluginConfig.Instance.playerOsc, "Player OSC Receiver");
-
+            var qFormat = GUILayout.Toggle(PluginConfig.Instance.qFormat, "q_format");
+            var playerOsc = GUILayout.Toggle(PluginConfig.Instance.playerOsc, "Player OSC Receiver");
+            if (PluginConfig.Instance.qFormat != qFormat)
+            {
+                PluginConfig.Instance.qFormat = qFormat;
+            }
+            if (PluginConfig.Instance.playerOsc != playerOsc)
+            {
+                PluginConfig.Instance.playerOsc = playerOsc;
+            }
             GUILayout.EndVertical();
         }
 
@@ -220,9 +212,9 @@ namespace BS_CameraMovement.Components
                     // Check for LookAt (TRUE)
                     if (Regex.IsMatch(text[idx], "true", RegexOptions.IgnoreCase))
                     {
-                        // LookAt logic not fully implemented here as I don't have AvatarPosition easily.
-                        // Assuming just skip for now or handle rotation normally if not true.
-                         // But if TRUE, rotation is calculated.
+                        // LookAtロジックはAvatarPositionを容易に入手できないため、ここでは完全には実装されていません。
+                        // 現時点ではスキップするか、TRUEでない場合は通常通り回転を処理すると仮定します。
+                        // ただしTRUEの場合、回転が計算されます。
                     }
                     idx++; 
                 }
