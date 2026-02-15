@@ -152,7 +152,7 @@
     <Compile Include="Osc\OscDataTypes.cs" />
     <Compile Include="Osc\OscPacketDecoder.cs" />
     <Compile Include="Osc\OscServer.cs" />
-    <Compile Include="Patches\KeyboardBinderPatches.cs" />
+    <Compile Include="HarmonyPatches\KeyboardBinderManualUpdatePatche.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

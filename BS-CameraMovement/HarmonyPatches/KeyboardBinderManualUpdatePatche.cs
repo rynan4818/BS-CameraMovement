@@ -2,10 +2,10 @@ using HarmonyLib;
 using HMUI;
 using UnityEngine;
 
-namespace BS_CameraMovement.Patches
+namespace BS_CameraMovement.HarmonyPatches
 {
     [HarmonyPatch(typeof(KeyboardBinder), nameof(KeyboardBinder.ManualUpdate))]
-    public class KeyboardBinderPatches
+    public class KeyboardBinderManualUpdatePatche
     {
         public static bool IsEditorMode { get; set; } = false;
 

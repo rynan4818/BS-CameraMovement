@@ -20,7 +20,7 @@ namespace BS_CameraMovement.Components
         private NoteCutSoundEffectManager _noteCutSoundEffectManager;
         private BasicBeatmapObjectManager _beatmapObjectManager;
 
-        private bool _showGui = true;
+        private bool _showGui = false;
         private Rect _windowRect = new Rect(10, 10, 180, 50);
 
         private GameObject _cameraObject;
@@ -59,6 +59,7 @@ namespace BS_CameraMovement.Components
             {
                 CreateOscCamera();
                 StartOsc();
+                _showGui = true;
             }
         }
 

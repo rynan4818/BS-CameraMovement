@@ -25,10 +25,8 @@ namespace BS_CameraMovement
             Log = logger;
             zenjector.UseLogger(Log);
             Log.Info("BS-CameraMovement initialized.");
-
+            _harmony = new Harmony(HARMONY_ID);
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-            Log.Debug("Config loaded");
-
             zenjector.Install<BSCameraMovementInstaller, BeatmapLevelEditorInstaller>();
             zenjector.Install<GamePlayerInstaller>(Location.StandardPlayer);
         }
@@ -37,7 +35,6 @@ namespace BS_CameraMovement
         public void OnApplicationStart()
         {
             Log.Debug("OnApplicationStart");
-            _harmony = new Harmony(HARMONY_ID);
             _harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 
