@@ -45,10 +45,6 @@ namespace BS_CameraMovement.Components
         public void OnGUI()
         {
             if (_mainCameraFov == null) return;
-
-            // Prevent input conflict
-            bool isInputActive = GUIUtility.keyboardControl != 0;
-
             // Toggle Menu Button
             if (GUI.Button(new Rect(Screen.width - 130, 10, 120, 20), PluginConfig.Instance.showMenu ? "Hide Camera UI" : "Show Camera UI"))
             {

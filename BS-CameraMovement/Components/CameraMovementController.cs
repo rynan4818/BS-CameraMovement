@@ -3,6 +3,7 @@ using System.IO;
 using UnityEngine;
 using Zenject;
 using BeatmapEditor3D.DataModels;
+using BS_CameraMovement.Patches;
 using BS_CameraMovement.Configuration;
 
 namespace BS_CameraMovement.Components
@@ -50,7 +51,7 @@ namespace BS_CameraMovement.Components
 
         public void Initialize()
         {
-            Plugin.Log.Info("BS-CameraMovement: CameraMovementController Initializing...");
+            KeyboardBinderPatches.IsEditorMode = true;
             _mainCamera = GameObject.Find("Wrapper/MainCamera").GetComponent<Camera>();
             UpdateCameraState();
             Plugin.Log.Info($"usePhysicalProperties:{_mainCamera.usePhysicalProperties}");
@@ -183,8 +184,8 @@ namespace BS_CameraMovement.Components
                 if (disposing)
                 {
                     // TODO: マネージド状態を破棄します (マネージド オブジェクト)
+                    KeyboardBinderPatches.IsEditorMode = false;
                 }
-
                 // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、ファイナライザーをオーバーライドします
                 // TODO: 大きなフィールドを null に設定します
                 if (_fileWatcher != null)
