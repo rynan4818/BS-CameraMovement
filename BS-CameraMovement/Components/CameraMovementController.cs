@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEngine;
 using Zenject;
+using BeatmapEditor3D;
 using BeatmapEditor3D.DataModels;
 using BS_CameraMovement.HarmonyPatches;
 using BS_CameraMovement.Configuration;
@@ -13,7 +14,7 @@ namespace BS_CameraMovement.Components
         private BeatmapProjectManager _beatmapProjectManager;
         private IAudioTimeSource _audioTimeSyncController;
         private CameraMovement _cameraMovement;
-        private BeatmapDataModel _audioDataModel;
+        private AudioDataModel _audioDataModel;
         private OscCameraReceiver _receiver;
         private Camera _mainCamera;
         private string _scriptPath;
@@ -39,7 +40,7 @@ namespace BS_CameraMovement.Components
             BeatmapProjectManager beatmapProjectManager,
             IAudioTimeSource audioTimeSyncController,
             CameraMovement cameraMovement,
-            BeatmapDataModel audioDataModel,
+            AudioDataModel audioDataModel,
             OscCameraReceiver oscCameraReceiver)
         {
             _beatmapProjectManager = beatmapProjectManager;
