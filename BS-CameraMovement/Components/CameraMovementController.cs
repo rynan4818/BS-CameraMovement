@@ -14,7 +14,6 @@ namespace BS_CameraMovement.Components
         private IAudioTimeSource _audioTimeSyncController;
         private CameraMovement _cameraMovement;
         private AudioDataModel _audioDataModel;
-        private OscReceiverController _oscReceiverController;
         private OscCameraReceiver _receiver;
         private Camera _mainCamera;
         private string _scriptPath;
@@ -39,15 +38,14 @@ namespace BS_CameraMovement.Components
         public CameraMovementController(
             BeatmapProjectManager beatmapProjectManager,
             IAudioTimeSource audioTimeSyncController,
+            CameraMovement cameraMovement,
             AudioDataModel audioDataModel,
-            OscReceiverController oscReceiverController,
             OscCameraReceiver oscCameraReceiver)
         {
             _beatmapProjectManager = beatmapProjectManager;
             _audioTimeSyncController = audioTimeSyncController;
-            _cameraMovement = new CameraMovement();
+            _cameraMovement = cameraMovement;
             _audioDataModel = audioDataModel;
-            _oscReceiverController = oscReceiverController;
             _receiver = oscCameraReceiver;
         }
 
@@ -132,7 +130,7 @@ namespace BS_CameraMovement.Components
             else
             {
                 _mainCamera.rect = new Rect(0, 0, 1f, 1f);
-                // Transform‚ÍCamera.mainAFOV‚ÍWrapper/MainCamera‚Éİ’è‚ª•K—v‚È——R
+                // Transformã¯Camera.mainã€FOVã¯Wrapper/MainCameraã«è¨­å®šãŒå¿…è¦ãªç†ç”±
                 // https://github.com/rynan4818/BS-CameraMovement/wiki/%E3%82%AB%E3%83%A1%E3%83%A9%E3%81%AE%E5%88%B6%E5%BE%A1%E6%96%B9%E6%B3%95
                 Camera.main.transform.position = new Vector3(0, 2, -6);
                 Camera.main.transform.eulerAngles = new Vector3(15, 0, 0);
@@ -185,11 +183,11 @@ namespace BS_CameraMovement.Components
             {
                 if (disposing)
                 {
-                    // TODO: ƒ}ƒl[ƒWƒhó‘Ô‚ğ”jŠü‚µ‚Ü‚· (ƒ}ƒl[ƒWƒh ƒIƒuƒWƒFƒNƒg)
+                    // TODO: ãƒãƒãƒ¼ã‚¸ãƒ‰çŠ¶æ…‹ã‚’ç ´æ£„ã—ã¾ã™ (ãƒãƒãƒ¼ã‚¸ãƒ‰ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ)
                 }
 
-                // TODO: ƒAƒ“ƒ}ƒl[ƒWƒh ƒŠƒ\[ƒX (ƒAƒ“ƒ}ƒl[ƒWƒh ƒIƒuƒWƒFƒNƒg) ‚ğ‰ğ•ú‚µAƒtƒ@ƒCƒiƒ‰ƒCƒU[‚ğƒI[ƒo[ƒ‰ƒCƒh‚µ‚Ü‚·
-                // TODO: ‘å‚«‚ÈƒtƒB[ƒ‹ƒh‚ğ null ‚Éİ’è‚µ‚Ü‚·
+                // TODO: ã‚¢ãƒ³ãƒãƒãƒ¼ã‚¸ãƒ‰ ãƒªã‚½ãƒ¼ã‚¹ (ã‚¢ãƒ³ãƒãƒãƒ¼ã‚¸ãƒ‰ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ) ã‚’è§£æ”¾ã—ã€ãƒ•ã‚¡ã‚¤ãƒŠãƒ©ã‚¤ã‚¶ãƒ¼ã‚’ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã—ã¾ã™
+                // TODO: å¤§ããªãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’ null ã«è¨­å®šã—ã¾ã™
                 if (_fileWatcher != null)
                 {
                     _fileWatcher.Changed -= OnFileChanged;
@@ -200,16 +198,16 @@ namespace BS_CameraMovement.Components
             }
         }
 
-        // // TODO: 'Dispose(bool disposing)' ‚ÉƒAƒ“ƒ}ƒl[ƒWƒh ƒŠƒ\[ƒX‚ğ‰ğ•ú‚·‚éƒR[ƒh‚ªŠÜ‚Ü‚ê‚éê‡‚É‚Ì‚İAƒtƒ@ƒCƒiƒ‰ƒCƒU[‚ğƒI[ƒo[ƒ‰ƒCƒh‚µ‚Ü‚·
+        // // TODO: 'Dispose(bool disposing)' ã«ã‚¢ãƒ³ãƒãƒãƒ¼ã‚¸ãƒ‰ ãƒªã‚½ãƒ¼ã‚¹ã‚’è§£æ”¾ã™ã‚‹ã‚³ãƒ¼ãƒ‰ãŒå«ã¾ã‚Œã‚‹å ´åˆã«ã®ã¿ã€ãƒ•ã‚¡ã‚¤ãƒŠãƒ©ã‚¤ã‚¶ãƒ¼ã‚’ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã—ã¾ã™
         // ~CameraMovementController()
         // {
-        //     // ‚±‚ÌƒR[ƒh‚ğ•ÏX‚µ‚È‚¢‚Å‚­‚¾‚³‚¢BƒNƒŠ[ƒ“ƒAƒbƒv ƒR[ƒh‚ğ 'Dispose(bool disposing)' ƒƒ\ƒbƒh‚É‹Lq‚µ‚Ü‚·
+        //     // ã“ã®ã‚³ãƒ¼ãƒ‰ã‚’å¤‰æ›´ã—ãªã„ã§ãã ã•ã„ã€‚ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ— ã‚³ãƒ¼ãƒ‰ã‚’ 'Dispose(bool disposing)' ãƒ¡ã‚½ãƒƒãƒ‰ã«è¨˜è¿°ã—ã¾ã™
         //     Dispose(disposing: false);
         // }
 
         public void Dispose()
         {
-            // ‚±‚ÌƒR[ƒh‚ğ•ÏX‚µ‚È‚¢‚Å‚­‚¾‚³‚¢BƒNƒŠ[ƒ“ƒAƒbƒv ƒR[ƒh‚ğ 'Dispose(bool disposing)' ƒƒ\ƒbƒh‚É‹Lq‚µ‚Ü‚·
+            // ã“ã®ã‚³ãƒ¼ãƒ‰ã‚’å¤‰æ›´ã—ãªã„ã§ãã ã•ã„ã€‚ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ— ã‚³ãƒ¼ãƒ‰ã‚’ 'Dispose(bool disposing)' ãƒ¡ã‚½ãƒƒãƒ‰ã«è¨˜è¿°ã—ã¾ã™
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }

@@ -7,6 +7,7 @@ namespace BS_CameraMovement.Installers
     {
         public override void InstallBindings()
         {
+            Container.BindInterfacesAndSelfTo<CameraMovement>().AsSingle();
             Container.BindInterfacesAndSelfTo<CameraMovementController>().AsSingle();
             Container.BindInterfacesAndSelfTo<OscCameraReceiver>().AsSingle();
             Container.BindInterfacesAndSelfTo<OscReceiverController>().AsSingle();
