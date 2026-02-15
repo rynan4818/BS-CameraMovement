@@ -159,7 +159,7 @@ namespace BS_CameraMovement.Components
                     }
 
                     // 一時停止中に songTime が指定されていればジャンプ
-                    if (_audioTimeSyncController != null && _audioTimeSyncController.state == AudioTimeSyncController.State.Paused)
+                    if (_audioTimeSyncController != null && _audioTimeSyncController.state == IAudioTimeSource.State.Paused)
                     {
                         if (songTime >= 0 && Mathf.Abs(songTime - _audioTimeSyncController.songTime) > Mathf.Epsilon)
                         {
@@ -174,7 +174,7 @@ namespace BS_CameraMovement.Components
             // 一時停止中のメニュー表示制御
             try
             {
-                if (_audioTimeSyncController != null && _audioTimeSyncController.state == AudioTimeSyncController.State.Paused)
+                if (_audioTimeSyncController != null && _audioTimeSyncController.state == IAudioTimeSource.State.Paused)
                 {
                     UpdatePauseMenuVisibility();
                 }
