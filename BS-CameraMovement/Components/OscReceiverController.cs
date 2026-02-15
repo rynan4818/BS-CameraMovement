@@ -65,6 +65,7 @@ namespace BS_CameraMovement.Components
                 _signalBus.Fire<UpdatePlayHeadSignal>(
                     new UpdatePlayHeadSignal(songTime, UpdatePlayHeadSignal.SnapType.None, false)
                 );
+                _receiver.ClearData();
             }
         }
 
